@@ -1,0 +1,71 @@
+project(':server') {
+    apply plugin: 'application'
+    application {
+        mainClass = 'Server'
+    }
+
+    dependencies {
+        implementation project(':common')
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.19.0'
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.19.0'
+        implementation 'com.google.code.gson:gson:2.8.9'
+        implementation 'org.postgresql:postgresql:42.6.0'
+    }
+    mainClassName = 'Server'
+
+    jar {
+        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+        manifest {
+            attributes "Main-Class": "$mainClassName"
+        }
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+}
+project(':client') {
+    apply plugin: 'application'
+    application {
+        mainClass = 'Client'
+    }
+    dependencies {
+        implementation project(':common')
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.19.0'
+        implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.19.0'
+        implementation 'com.google.code.gson:gson:2.8.9'
+        implementation 'org.postgresql:postgresql:42.6.0'
+    }
+
+    mainClassName = 'Client'
+
+    jar {
+        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+        manifest {
+            attributes "Main-Class": "$mainClassName"
+        }
+        from {
+            configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        }
+    }
+}
+
+allprojects{
+    apply plugin: 'java'
+    group 'ru.ifmo.se'
+    version '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
